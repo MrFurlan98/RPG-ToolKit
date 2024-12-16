@@ -5,7 +5,7 @@ using UnityEngine;
 public class FollowCamera : MonoBehaviour
 {
     [SerializeField] private Transform _target;
-    void Update()
+    void LateUpdate()
     {
         if (_target)
             transform.position = _target.position;
