@@ -5,6 +5,7 @@ using UnityEngine.AI;
 
 public class Mover : MonoBehaviour
 {
+    [SerializeField] private Animator _animator;
     private NavMeshAgent _agent;
 
     private Ray _lastRay;
@@ -19,9 +20,9 @@ public class Mover : MonoBehaviour
     void Update()
     {
         if (Input.GetMouseButtonDown(0))
-        {
             MoveToCursor();
-        }
+
+        UpdateAnimator();
     }
 
     private void MoveToCursor()
@@ -37,5 +38,15 @@ public class Mover : MonoBehaviour
     {
         if (_agent)
             _agent.SetDestination(position);
+    }
+
+    private void UpdateAnimator()
+    {
+        if (_agent)
+        {
+            Vector3 localVelocity = transform.InverseTransformDirection(_agent.velocity);
+
+            _animator.SetFloat("forwardSpeed", localVelocity.z);
+        }
     }
 }
