@@ -46,7 +46,7 @@ namespace RPGToolKit.Control
             if (Physics.Raycast(GetMouseRay(), out hit) && _playerMover)
             {
                 if (Input.GetMouseButton(0))
-                    _playerMover.MoveTo(hit.point);
+                    _playerMover.StartMovementAction(hit.point);
                 return true;
             }
 

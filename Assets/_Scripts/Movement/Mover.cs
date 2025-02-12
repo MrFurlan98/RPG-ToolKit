@@ -1,37 +1,25 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using RPGToolKit.Core;
 
 namespace RPGToolKit.Movement
 {
-    public class Mover : MonoBehaviour
+    [RequireComponent(typeof(ActionScheduler))]
+    public class Mover : MonoBehaviour, IAction
     {
         [SerializeField] private Animator _animator;
+        private ActionScheduler _actionScheduler;
         private NavMeshAgent _agent;
 
         void Start()
         {
             _agent = GetComponent<NavMeshAgent>();
+            _actionScheduler = GetComponent<ActionScheduler>();
         }
 
-        void FixedUpdate()
+        void Update()
         {
             UpdateAnimator();
-        }
-
-        public void MoveTo(Vector3 position)
-        {
-            if (_agent)
-            {
-                _agent.SetDestination(position);
-                _agent.isStopped = false;
-            }
-        }
-
-        public void Stop()
-        {
-            _agent.isStopped = true;
         }
 
         private void UpdateAnimator()
@@ -42,6 +30,25 @@ namespace RPGToolKit.Movement
 
                 _animator.SetFloat("forwardSpeed", localVelocity.z);
             }
+        }
+
+        public void StartMovementAction(Vector3 position)
+        {
+            _actionScheduler.StartAction(this);
+            MoveTo(position);
+        }
+
+        public void MoveTo(Vector3 position)
+        {
+            if (_agent)
+            {
+                _agent.SetDestination(position);
+                _agent.isStopped = false;
+            }
+        }
+        public void CancelAction()
+        {
+            _agent.isStopped = true;
         }
     }
 }
