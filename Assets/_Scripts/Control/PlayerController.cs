@@ -19,11 +19,11 @@ namespace RPGToolKit.Control
 
         void FixedUpdate()
         {
-            UpdateCombat();
-            UpdateMovement();
+            if (UpdateCombat()) return;
+            if (UpdateMovement()) return;
         }
 
-        private void UpdateCombat()
+        private bool UpdateCombat()
         {
             RaycastHit[] hits = Physics.RaycastAll(GetMouseRay());
 
@@ -34,21 +34,25 @@ namespace RPGToolKit.Control
 
                 if (Input.GetMouseButtonDown(0))
                     _fighter.Attack(target);
+
+                return true;
             }
+
+            return false;
         }
 
-        private void UpdateMovement()
-        {
-            if (Input.GetMouseButton(0))
-                MoveToCursor();
-        }
-
-        private void MoveToCursor()
+        private bool UpdateMovement()
         {
             RaycastHit hit;
 
             if (Physics.Raycast(GetMouseRay(), out hit) && _playerMover)
-                _playerMover.MoveTo(hit.point);
+            {
+                if (Input.GetMouseButton(0))
+                    _playerMover.MoveTo(hit.point);
+                return true;
+            }
+
+            return false;
         }
 
         private static Ray GetMouseRay()
