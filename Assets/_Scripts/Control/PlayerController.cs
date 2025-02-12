@@ -6,15 +6,13 @@ namespace RPGToolKit.Control
 {
     public class PlayerController : MonoBehaviour
     {
-        [SerializeField] private Mover _playerMover;
-        [SerializeField] private Fighter _fighter;
+        private Mover _playerMover;
+        private Fighter _fighter;
 
         private void Start()
         {
-            if (!_playerMover)
-                _playerMover.GetComponent<Mover>();
-            if (!_fighter)
-                _fighter.GetComponent<Fighter>();
+            _playerMover = GetComponent<Mover>();
+            _fighter = GetComponent<Fighter>();
         }
 
         void FixedUpdate()

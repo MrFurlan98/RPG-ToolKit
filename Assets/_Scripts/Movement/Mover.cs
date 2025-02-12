@@ -23,7 +23,15 @@ namespace RPGToolKit.Movement
         public void MoveTo(Vector3 position)
         {
             if (_agent)
+            {
                 _agent.SetDestination(position);
+                _agent.isStopped = false;
+            }
+        }
+
+        public void Stop()
+        {
+            _agent.isStopped = true;
         }
 
         private void UpdateAnimator()

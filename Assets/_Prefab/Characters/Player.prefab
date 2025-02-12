@@ -48,8 +48,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f782b7748a4d6a49b66493ecd4704e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerMover: {fileID: 6826036082618142734}
-  _fighter: {fileID: 1541148439020161765}
 --- !u!114 &6826036082618142734
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -75,6 +73,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c23bff5d7ef47d64f947e6f22fbab827, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _weaponRange: 3
 --- !u!195 &6826036082618142733
 NavMeshAgent:
   m_ObjectHideFlags: 0
