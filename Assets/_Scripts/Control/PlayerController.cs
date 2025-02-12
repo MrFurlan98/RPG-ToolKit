@@ -1,31 +1,33 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using RPGToolKit.Movement;
 
-public class PlayerController : MonoBehaviour
+namespace RPGToolKit.Control
 {
-    [SerializeField] private Mover _playerMover;
-
-    private Ray _lastRay;
-
-    private void Start()
+    public class PlayerController : MonoBehaviour
     {
-        if (!_playerMover)
-            _playerMover.GetComponent<Mover>();
-    }
+        [SerializeField] private Mover _playerMover;
 
-    void FixedUpdate()
-    {
-        if (Input.GetMouseButton(0))
-            MoveToCursor();
-    }
+        private Ray _lastRay;
 
-    private void MoveToCursor()
-    {
-        _lastRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
+        private void Start()
+        {
+            if (!_playerMover)
+                _playerMover.GetComponent<Mover>();
+        }
 
-        if (Physics.Raycast(_lastRay, out hit) && _playerMover)
-            _playerMover.MoveTo(hit.point);
+        void FixedUpdate()
+        {
+            if (Input.GetMouseButton(0))
+                MoveToCursor();
+        }
+
+        private void MoveToCursor()
+        {
+            _lastRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+
+            if (Physics.Raycast(_lastRay, out hit) && _playerMover)
+                _playerMover.MoveTo(hit.point);
+        }
     }
 }
