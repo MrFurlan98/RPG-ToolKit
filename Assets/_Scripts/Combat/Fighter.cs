@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using RPGToolKit.Movement;
 using RPGToolKit.Core;
@@ -12,9 +10,10 @@ namespace RPGToolKit.Combat
         [SerializeField] private Animator _animator;
         [SerializeField] private float _weaponRange = 3f;
         [SerializeField] private float _attackDelay = 1f;
+        [SerializeField] private float _weaponDamage = 5f;
 
         private Mover _mover;
-        private Transform _currentTarget;
+        private Health _currentTargetHealth;
         private ActionScheduler _actionScheduler;
         float _timeSinceLastAttack = 0;
 
@@ -28,11 +27,11 @@ namespace RPGToolKit.Combat
         {
             _timeSinceLastAttack += Time.deltaTime;
 
-            if (_currentTarget)
+            if (_currentTargetHealth && !_currentTargetHealth.IsDead)
             {
                 if (!IsInRange())
                 {
-                    _mover.MoveTo(_currentTarget.position);
+                    _mover.MoveTo(_currentTargetHealth.transform.position);
                     return;
                 }
                 else
@@ -45,38 +44,54 @@ namespace RPGToolKit.Combat
 
         private void AttackBehavior()
         {
+            transform.LookAt(_currentTargetHealth.transform);
+
             if(_timeSinceLastAttack >= _attackDelay)
             {
-                _animator.SetTrigger("attack");
+                //This is will trigger the Hit() event.
+                TriggerAttack();
                 _timeSinceLastAttack = 0;
             }
         }
 
-        private bool IsInRange()
+        private void TriggerAttack()
         {
-            return Vector3.Distance(transform.position, _currentTarget.position) <= _weaponRange;
-        }
-
-        public void Attack(CombatTarget combatTarget)
-        {
-            _actionScheduler.StartAction(this);
-            _currentTarget = combatTarget.transform;
-        }
-
-        public void CancelAction()
-        {
-            CancelAttack();
-        }
-
-        public void CancelAttack()
-        {
-            _currentTarget = null;
+            _animator.ResetTrigger("cancelAttack");
+            _animator.SetTrigger("attack");
         }
 
         // Animation Event
         void Hit()
         {
             _timeSinceLastAttack = 0;
+
+            if (_currentTargetHealth)
+            {
+                _currentTargetHealth.TakeDamage(_weaponDamage);
+            }
+        }
+
+        private bool IsInRange()
+        {
+            return Vector3.Distance(transform.position, _currentTargetHealth.transform.position) <= _weaponRange;
+        }
+
+        public bool CanAttack(CombatTarget target)
+        {
+            return target != null && !target.GetComponent<Health>().IsDead;
+        }
+
+        public void Attack(CombatTarget combatTarget)
+        {
+            _actionScheduler.StartAction(this);
+            _currentTargetHealth = combatTarget.GetComponent<Health>();
+        }
+
+        public void CancelAction()
+        {
+            _animator.ResetTrigger("attack");
+            _animator.SetTrigger("cancelAttack");
+            _currentTargetHealth = null;
         }
     }
 }
